@@ -5,6 +5,8 @@
   "main": "index.js",
   "scripts": {
     "postinstall": "npm run install:apps",
+    "prexablau": "(cd ./app/backend && npx tsc)",
+    "xablau": "env $(cat ./app/backend/.env) jest -i --forceExit --verbose",
     "install:apps": "./apps_install.sh",
     "pretest": "(cd ./app/backend && /bin/sh tsc_eval.sh)",
     "test": "env $(cat ./app/backend/.env) jest -i --forceExit --verbose",

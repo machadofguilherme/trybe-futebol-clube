@@ -1,20 +1,31 @@
-import { Model } from 'sequelize';
+import { Model, STRING, INTEGER } from 'sequelize';
 import db from '.';
-// import OtherModel from './OtherModel';
 
-class Example extends Model {
-  // declare <campo>: <tipo>;
+class TeamModel extends Model {
+  declare id?: number;
+  declare teamName: string;
 }
 
-Example.init({
-  // ... Campos
-}, {
-  // ... Outras configs
-  underscored: true,
-  sequelize: db,
-  // modelName: 'example',
-  timestamps: false,
-});
+TeamModel.init(
+  {
+    id: {
+      primaryKey: true,
+      type: INTEGER,
+      allowNull: false,
+    },
+    teamName: {
+      type: STRING,
+      allowNull: false,
+      field: 'team_name',
+    },
+  },
+  {
+    underscored: true,
+    sequelize: db,
+    modelName: 'teams',
+    timestamps: false,
+  },
+);
 
 /**
   * `Workaround` para aplicar as associations em TS:
@@ -27,4 +38,4 @@ Example.init({
 // Example.hasMany(OtherModel, { foreignKey: 'campoC', as: 'campoEstrangeiroC' });
 // Example.hasMany(OtherModel, { foreignKey: 'campoD', as: 'campoEstrangeiroD' });
 
-export default Example;
+export default TeamModel;
