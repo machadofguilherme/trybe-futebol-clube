@@ -6,28 +6,29 @@ import chaiHttp = require('chai-http');
 import { app } from '../app';
 import TeamModel from '../database/models/TeamModel';
 import TeamMock from '../mocks/TeamMock';
-import { Response } from 'superagent';
 
 chai.use(chaiHttp);
 
 const { expect } = chai;
 
-describe('Seu teste', () => {
-  let chaiHttpResponse: Response;
+describe('GET /teams', () => {
+  afterEach(() => sinon.restore());
 
-  before(async () => {
-    sinon
-      .stub(TeamModel, "findAll")
-      .resolves({ ...TeamMock } as TeamModel[]);
+  it('GET /teams - Obtém todos os times', async () => {
+    sinon.stub(TeamModel, 'findAll').resolves(TeamMock as unknown as TeamModel[]);
+
+    const response = await chai.request(app).get('/teams').send();
+    
+    expect(response.body).to.be.deep.equal(TeamMock);
+    expect(response.status).to.be.equal(200);
   });
 
-  after(()=>{
-    (TeamModel.findAll as sinon.SinonStub).restore();
-  })
+  // it('GET /teams/:id - Obtém um time', async () => {
+  //   sinon.stub(TeamModel, 'findAll').resolves(TeamMock as unknown as TeamModel[]);
 
-  it('...', async () => {
-    chaiHttpResponse = await chai.request(app).get('/teams');
-       
-    expect(chaiHttpResponse.body).to.be.deep.equal(TeamMock);
-  });
+  //   const response = await chai.request(app).get('/teams').send();
+    
+  //   expect(response.body).to.be.deep.equal(TeamMock);
+  //   expect(response.status).to.be.equal(200);
+  // });
 });

@@ -4,4 +4,5 @@ COPY package.json package-lock.json /app-frontend/
 RUN npm i
 COPY . .
 EXPOSE 3000
-ENTRYPOINT [ "npm", "start" ]
+ENTRYPOINT [ "npm", "run" ]
+CMD [ "start" ]
