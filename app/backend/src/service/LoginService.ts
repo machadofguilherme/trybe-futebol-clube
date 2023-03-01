@@ -10,13 +10,15 @@ export default class LoginService {
   constructor(private _model = UserModel) { }
   async login(email: string, password: string): Promise<ILoginError> {
     const messageError = { code: 401, message: 'Invalid email or password' };
+
     const emailError = emailSchema.validate(email);
     const passwordError = passwordSchema.validate(password);
-    const user = await this._model.findOne({ where: { email } }) as ILogin;
-    const checkPass = compareSync(password, user.password);
 
-    if (user.email !== email || !checkPass) return messageError;
-    if (emailError.error || passwordError.error) return messageError;
+    const user = await this._model.findOne({ where: { email } }) as ILogin;
+    if (!user || emailError.error || passwordError.error) return messageError;
+
+    const checkPass = compareSync(password, user.password);
+    if (!checkPass) return messageError;
 
     const token = await tokenGenerate({ email, password });
     return { token } as keyof object;
