@@ -1,5 +1,4 @@
 import * as express from 'express';
-
 import LoginRouter from './routes/LoginRouter';
 import TeamRouter from './routes/TeamRouter';
 
