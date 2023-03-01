@@ -13,19 +13,16 @@ export default class LoginService {
     const passwordError = passwordSchema.validate(password);
     const user = await this._model.findOne({ where: { email } }) as ILogin;
 
-    if (!user || emailError.error || passwordError.error) {
+    if (user.email !== email
+      || user.password !== password
+      || emailError.error || passwordError.error) {
       return { code: 401, message: 'Invalid email or password' };
     }
 
-    const checkCrypt = compareSync(password, user.password);
+    compareSync(password, user.password);
 
-    if (checkCrypt) {
-      const token = await tokenGenerate({ email, password });
-      return { token } as keyof object;
-    }
-
-    const error: ILoginError = { code: 404, message: 'Algo deu errado!' };
-    return error;
+    const token = await tokenGenerate({ email, password });
+    return { token } as keyof object;
   }
 
   async loginRole(token: string): Promise<ILoginError> {
