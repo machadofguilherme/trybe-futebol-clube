@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { ILoginError } from '../interfaces/ILoginError';
 import { ILoginMethods } from '../interfaces/ILoginMethods';
 
 export default class LoginController {
@@ -9,6 +10,17 @@ export default class LoginController {
     const result = await this._service.login(email, password);
 
     if (result?.code === 404 || result.code === 401) {
+      return res.status(result.code).json({ message: result.message });
+    }
+
+    res.status(200).json(result);
+  }
+
+  async loginRole(req: Request, res: Response): Promise<ILoginError | Response | void> {
+    const token = req.headers.authorization;
+    const result = await this._service.loginRole(token);
+
+    if (result.code) {
       return res.status(result.code).json({ message: result.message });
     }
 
