@@ -7,7 +7,6 @@ import { ILoginError } from '../interfaces/ILoginError';
 
 export default class LoginService {
   constructor(private _model = UserModel) { }
-
   async login(email: string, password: string): Promise<ILoginError> {
     const emailError = emailSchema.validate(email);
     const passwordError = passwordSchema.validate(password);
