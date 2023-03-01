@@ -1,4 +1,5 @@
 import { compareSync } from 'bcryptjs';
+import tokenChecker from '../utils/tokenChecker';
 import tokenGenerate from '../utils/tokenGenerate';
 import { ILogin } from '../interfaces/ILogin';
 import UserModel from '../database/models/UserModel';
@@ -25,5 +26,22 @@ export default class LoginService {
 
     const error: ILoginError = { code: 404, message: 'Algo deu errado!' };
     return error;
+  }
+
+  async loginRole(token: string): Promise<ILoginError> {
+    const check = tokenChecker(token);
+
+    if (!check) {
+      const error = { code: 401, message: 'Token must be a valid token' };
+      return error;
+    }
+
+    const { email } = check;
+
+    const user = await this._model.findOne({
+      where: { email },
+    });
+
+    return { role: user?.role } as keyof object;
   }
 }

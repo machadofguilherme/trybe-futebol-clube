@@ -14,4 +14,15 @@ export default class LoginController {
 
     res.status(200).json(result);
   }
+
+  async loginRole(req: Request, res: Response): Promise<Response | void> {
+    const token: string | undefined = req.headers.authorization;
+    const result = await this._service.loginRole(token);
+
+    if (result.code) {
+      return res.status(result.code).json({ message: result.message });
+    }
+
+    res.status(200).json(result);
+  }
 }
