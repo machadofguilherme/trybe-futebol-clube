@@ -21,6 +21,7 @@ export default class LoginService {
     if (!checkPass) return messageError;
 
     const token = await tokenGenerate({ email, password });
+
     return { token } as keyof object;
   }
 

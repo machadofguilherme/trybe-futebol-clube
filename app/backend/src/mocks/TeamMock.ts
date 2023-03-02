@@ -15,4 +15,9 @@ const teams: ITeamMock[] = [
   },
 ];
 
-export default teams;
+const team = {
+  id: 1,
+  teamName: 'Avaí/Kindermann',
+};
+
+export { teams, team };
