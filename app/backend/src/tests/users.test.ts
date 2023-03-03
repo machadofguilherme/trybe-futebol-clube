@@ -12,6 +12,7 @@ const { expect } = chai;
 
 describe('POST /login', () => {
   afterEach(() => sinon.restore());
+  
   const invalidMessage = { "message": "Invalid email or password" };
 
   it('POST /login - Campo email inválido', async () => {
