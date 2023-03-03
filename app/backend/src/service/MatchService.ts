@@ -69,6 +69,7 @@ export default class MatchService {
     homeTeamGoals: number,
     awayTeamGoals: number,
   ): Promise<ILoginError | IFinishMatch> {
+
     const checkToken = await tokenChecker(token);
 
     if (!checkToken) {
@@ -79,9 +80,7 @@ export default class MatchService {
       return errorMessage;
     }
 
-    await this._model.update({ homeTeamGoals, awayTeamGoals }, {
-      where: { id },
-    });
+    await this._model.update({ homeTeamGoals, awayTeamGoals }, { where: { id } });
 
     const response = { message: 'Updated scoreboard' };
     return response;
