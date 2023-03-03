@@ -1,6 +1,9 @@
 import { IMatch } from '../interfaces/IMatch';
 import MatchModel from '../database/models/MatchModel';
 import TeamModel from '../database/models/TeamModel';
+import tokenChecker from '../utils/tokenChecker';
+import { ILoginError } from '../interfaces/ILoginError';
+import { IFinishMatch } from '../interfaces/IFinishMatch';
 
 export default class MatchService {
   constructor(private _model = MatchModel) { }
@@ -39,5 +42,24 @@ export default class MatchService {
 
       return teamMatches as [];
     }
+  }
+
+  async finishMatch(id: number, token: string): Promise<ILoginError | IFinishMatch> {
+    const checkToken = await tokenChecker(token);
+
+    if (!checkToken) {
+      const errorMessage: ILoginError = {
+        code: 401, message: 'Token must be a valid token',
+      };
+
+      return errorMessage;
+    }
+
+    await this._model.update({ inProgress: false }, {
+      where: { id },
+    });
+
+    const response = { message: 'Finished' };
+    return response;
   }
 }

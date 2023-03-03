@@ -1,5 +1,5 @@
 export interface ILoginError {
-  code: number,
+  code?: number,
   message?: string;
   token?: string;
 }

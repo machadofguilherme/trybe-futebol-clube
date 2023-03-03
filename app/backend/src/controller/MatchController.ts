@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { ILoginError } from '../interfaces/ILoginError';
 import { IMatchMethods } from '../interfaces/IMatchMethods';
 
 export default class MatchController {
@@ -13,6 +14,19 @@ export default class MatchController {
     }
 
     const result = await this._service.findAll();
+    res.status(200).json(result);
+  }
+
+  async finishMatch(req: Request, res: Response): Promise<Response | void> {
+    const { id } = req.params;
+    const token = req.headers.authorization;
+
+    const result: ILoginError = await this._service.finishMatch(Number(id), token);
+
+    if (result.code) {
+      return res.status(result.code).json({ message: result.message });
+    }
+
     res.status(200).json(result);
   }
 }
