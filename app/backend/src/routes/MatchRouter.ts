@@ -9,9 +9,15 @@ const matchController = new MatchController(new MatchService());
 router.get('/matches', (req, res) => matchController.findAll(req, res));
 
 router.patch(
-  '/matches/:id/finish',
+  '/matches/:id',
   validateToken,
   (req, res) => matchController.finishMatch(req, res),
+);
+
+router.patch(
+  '/matches/:id/finish',
+  validateToken,
+  (req, res) => matchController.updateScore(req, res),
 );
 
 export default { router };

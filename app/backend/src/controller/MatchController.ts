@@ -29,4 +29,19 @@ export default class MatchController {
 
     res.status(200).json(result);
   }
+
+  async updateScore(req: Request, res: Response): Promise<Response | void> {
+    const { id } = req.params;
+    const token = req.headers.authorization;
+    const { homeTeamGoals, awayTeamGoals } = req.body;
+
+    const result: ILoginError = await this
+      ._service.updateScore(Number(id), token, homeTeamGoals, awayTeamGoals);
+
+    if (result.code) {
+      return res.status(result.code).json({ message: result.message });
+    }
+
+    res.status(200).json(result);
+  }
 }

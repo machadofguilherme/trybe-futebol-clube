@@ -62,4 +62,28 @@ export default class MatchService {
     const response = { message: 'Finished' };
     return response;
   }
+
+  async updateScore(
+    id: number,
+    token: string,
+    homeTeamGoals: number,
+    awayTeamGoals: number,
+  ): Promise<ILoginError | IFinishMatch> {
+    const checkToken = await tokenChecker(token);
+
+    if (!checkToken) {
+      const errorMessage: ILoginError = {
+        code: 401, message: 'Token must be a valid token',
+      };
+
+      return errorMessage;
+    }
+
+    await this._model.update({ homeTeamGoals, awayTeamGoals }, {
+      where: { id },
+    });
+
+    const response = { message: 'Updated scoreboard' };
+    return response;
+  }
 }
