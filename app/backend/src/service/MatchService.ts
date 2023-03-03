@@ -69,7 +69,6 @@ export default class MatchService {
     homeTeamGoals: number,
     awayTeamGoals: number,
   ): Promise<ILoginError | IFinishMatch> {
-
     const checkToken = await tokenChecker(token);
 
     if (!checkToken) {
