@@ -5,11 +5,11 @@ export default class MatchController {
   constructor(private _service: IMatchMethods) { }
 
   async findAll(req: Request, res: Response): Promise<Response | void> {
-    const { inProgress } = req.query;
+    const isTrueOrFalse = req.query.inProgress;
 
-    if (inProgress === 'true' || inProgress === 'false') {
-      const result = await this._service.checkMatches(String(inProgress));
-      return res.status(200).json(result);
+    if (isTrueOrFalse === 'true' || isTrueOrFalse === 'false') {
+      const foundMatches = await this._service.checkMatches(String(isTrueOrFalse));
+      return res.status(200).json(foundMatches);
     }
 
     const result = await this._service.findAll();
