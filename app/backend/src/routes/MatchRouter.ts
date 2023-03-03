@@ -8,6 +8,12 @@ const matchController = new MatchController(new MatchService());
 
 router.get('/matches', (req, res) => matchController.findAll(req, res));
 
+router.post(
+  '/matches',
+  validateToken,
+  (req, res) => matchController.create(req, res),
+);
+
 router.patch(
   '/matches/:id/finish',
   validateToken,

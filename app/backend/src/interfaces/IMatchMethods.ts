@@ -1,3 +1,4 @@
+import { ICreateMatch } from './ICreateMatch';
 import { IMatch } from './IMatch';
 
 export interface IMatchMethods {
@@ -11,4 +12,6 @@ export interface IMatchMethods {
     homeTeamGoals: number,
     awayTeamGoals: number,
   ): Promise<object>;
+
+  create(token: string, object: ICreateMatch): Promise<object>;
 }

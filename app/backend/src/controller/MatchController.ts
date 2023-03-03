@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { ICreateMatch } from '../interfaces/ICreateMatch';
 import { ILoginError } from '../interfaces/ILoginError';
 import { IMatchMethods } from '../interfaces/IMatchMethods';
 
@@ -43,5 +44,20 @@ export default class MatchController {
     }
 
     res.status(200).json(result);
+  }
+
+  async create(req: Request, res: Response): Promise<Response | void> {
+    const userToken = req.headers.authorization;
+    const { homeTeamId, awayTeamId, homeTeamGoals, awayTeamGoals } = req.body;
+
+    const data: ICreateMatch | undefined = { homeTeamId, awayTeamId, homeTeamGoals, awayTeamGoals };
+
+    const result: ILoginError = await this._service.create(String(userToken), data);
+
+    if (result.code) {
+      return res.status(result.code).json({ message: result.message });
+    }
+
+    res.status(201).json(result);
   }
 }

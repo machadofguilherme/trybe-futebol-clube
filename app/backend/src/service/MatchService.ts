@@ -4,6 +4,9 @@ import TeamModel from '../database/models/TeamModel';
 import tokenChecker from '../utils/tokenChecker';
 import { ILoginError } from '../interfaces/ILoginError';
 import { IFinishMatch } from '../interfaces/IFinishMatch';
+import { ICreateMatch } from '../interfaces/ICreateMatch';
+
+const warning = 'Token must be a valid token';
 
 export default class MatchService {
   constructor(private _model = MatchModel) { }
@@ -49,7 +52,7 @@ export default class MatchService {
 
     if (!checkToken) {
       const errorMessage: ILoginError = {
-        code: 401, message: 'Token must be a valid token',
+        code: 401, message: warning,
       };
 
       return errorMessage;
@@ -73,7 +76,7 @@ export default class MatchService {
 
     if (!checkToken) {
       const errorMessage: ILoginError = {
-        code: 401, message: 'Token must be a valid token',
+        code: 401, message: warning,
       };
 
       return errorMessage;
@@ -83,5 +86,26 @@ export default class MatchService {
 
     const response = { message: 'Updated scoreboard' };
     return response;
+  }
+
+  async create(token: string, object: ICreateMatch): Promise<object> {
+    const checkToken = await tokenChecker(token);
+
+    if (!checkToken) {
+      const errorMessage: ILoginError = { code: 401, message: warning };
+      return errorMessage;
+    }
+
+    const result = await this._model.create(
+      {
+        homeTeamId: object.homeTeamId,
+        homeTeamGoals: object.homeTeamGoals,
+        awayTeamId: object.awayTeamId,
+        awayTeamGoals: object.awayTeamGoals,
+        inProgress: true,
+      },
+    );
+
+    return result;
   }
 }
