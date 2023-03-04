@@ -9,6 +9,27 @@ export default class LeaderBoardService {
 
   constructor(private _matchModel = MatchModel, private _teamModel = TeamModel) { }
 
+  public async find(): Promise<ILeaderBoard[]> {
+    const findMatches = await this._matchModel.findAll({ where: { inProgress: false } });
+    const response = JSON.parse(JSON.stringify(findMatches));
+    const findTeam = await this._teamModel.findAll();
+    const result = LeaderBoardService.sortTeams(findTeam.map((team) => {
+      const infoHome = LeaderBoardService.pointsTeam(Number(team.id), response);
+      const infoAway = LeaderBoardService.pointsTeam(Number(team.id), response);
+
+      return LeaderBoardService.setInfo({
+        team,
+        infoHome,
+        infoAway,
+        totalVictories: infoHome.totalVictories + infoAway.totalVictories,
+        totalDraws: infoHome.totalDraws + infoAway.totalDraws,
+        totalGames: infoHome.totalGames + infoAway.totalGames,
+      });
+    }));
+
+    return result;
+  }
+
   private static pointsTeam(home:number, arrayMatch: IReturnLeader[]) {
     const matches = arrayMatch.filter((item) => item.homeTeamId === home);
     const equal = matches.filter((item) => item.homeTeamGoals === item.awayTeamGoals);
@@ -58,26 +79,5 @@ export default class LeaderBoardService {
         ((((totalVictories * 3) + totalDraws) / (totalGames * 3)) * 100).toFixed(2)
       }`,
     };
-  }
-
-  public async find(): Promise<ILeaderBoard[]> {
-    const findMatches = await this._matchModel.findAll({ where: { inProgress: false } });
-    const response = JSON.parse(JSON.stringify(findMatches));
-    const findTeam = await this._teamModel.findAll();
-    const result = LeaderBoardService.sortTeams(findTeam.map((team) => {
-      const infoHome = LeaderBoardService.pointsTeam(Number(team.id), response);
-      const infoAway = LeaderBoardService.pointsTeam(Number(team.id), response);
-
-      return LeaderBoardService.setInfo({
-        team,
-        infoHome,
-        infoAway,
-        totalVictories: infoHome.totalVictories + infoAway.totalVictories,
-        totalDraws: infoHome.totalDraws + infoAway.totalDraws,
-        totalGames: infoHome.totalGames + infoAway.totalGames,
-      });
-    }));
-
-    return result;
   }
 }
