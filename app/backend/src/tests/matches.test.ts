@@ -91,7 +91,7 @@ describe('PATCH /matches', () => {
     expect(response.status).to.be.equal(401);
   });
 
-  it('POST /matches - Algum teste.', async () => {
+  it('POST /matches - Token 1.', async () => {
     const a = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9';
     const b = 'eyJlbWFpbCI6ImFkbWluQGFkbWluLmNvbSIsInBhc3N3b3JkIjoic2VjcmV0X2FkbWluIiwiaWF0IjoxNjc3ODk1MjE0LCJleHAiOjE2Nzc4OTYxMTR9';
     const c = 'V0xZs8TAwQ9qNvBZJjUg3mk202P4d8Ec_reUslPvqA4';
@@ -102,10 +102,10 @@ describe('PATCH /matches', () => {
       .request(app).post('/matches')
       .set({ "Authorization": `Bearer ${token}` });
     
-    expect(response.status).to.be.equal(422);
+    expect(response.status).to.be.equal(401);
   });
 
-  it('POST /matches - Algum teste.', async () => {
+  it('POST /matches - Xablau.', async () => {
     const response = await chai
       .request(app).post('/matches')
       .send({
@@ -117,6 +117,22 @@ describe('PATCH /matches', () => {
     
     expect(response.status).to.be.equal(404);
     expect(response.body).to.be.deep.equal({ message: 'There is no team with such id!' });
+  });
+
+  it('POST /matches - Dolau.', async () => {
+    const response = await chai
+      .request(app).post('/matches')
+      .send({
+        "homeTeamId": 12,
+        "awayTeamId": 12,
+        "homeTeamGoals": 0,
+        "awayTeamGoals": 0,
+      });
+    
+    expect(response.status).to.be.equal(422);
+    expect(response.body).to.be.deep.equal({
+      message: 'It is not possible to create a match with two equal teams',
+    });
   });
 
   it('PATCH /matches/:id - Algum teste.', async () => {
