@@ -102,7 +102,21 @@ describe('PATCH /matches', () => {
       .request(app).post('/matches')
       .set({ "Authorization": `Bearer ${token}` });
     
-    expect(response.status).to.be.equal(401);
+    expect(response.status).to.be.equal(422);
+  });
+
+  it('POST /matches - Algum teste.', async () => {
+    const response = await chai
+      .request(app).post('/matches')
+      .send({
+        "homeTeamId": 999,
+        "awayTeamId": 12,
+        "homeTeamGoals": 0,
+        "awayTeamGoals": 0,
+      });
+    
+    expect(response.status).to.be.equal(404);
+    expect(response.body).to.be.deep.equal({ message: 'There is no team with such id!' });
   });
 
   it('PATCH /matches/:id - Algum teste.', async () => {

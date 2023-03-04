@@ -37,7 +37,7 @@ export default class MatchController {
     const { homeTeamGoals, awayTeamGoals } = req.body;
 
     const result: ILoginError = await this
-      ._service.updateScore(Number(id), token, homeTeamGoals, awayTeamGoals);
+      ._service.updateScore(Number(id), token, Number(homeTeamGoals), Number(awayTeamGoals));
 
     if (result.code) {
       return res.status(result.code).json({ message: result.message });

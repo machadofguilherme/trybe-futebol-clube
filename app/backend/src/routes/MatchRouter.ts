@@ -11,8 +11,8 @@ router.get('/matches', (req, res) => matchController.findAll(req, res));
 
 router.post(
   '/matches',
-  validateToken,
   validateMatch,
+  validateToken,
   (req, res) => matchController.create(req, res),
 );
 
