@@ -13,7 +13,7 @@ export default class LeaderBoardService {
     const findMatches = await this._matchModel.findAll({ where: { inProgress: false } });
     const response = JSON.parse(JSON.stringify(findMatches));
     const findTeam = await this._teamModel.findAll();
-    const result = findTeam.map((team) => {
+    const result = LeaderBoardService.sortTeams(findTeam.map((team) => {
       const infoHome = LeaderBoardService.pointsTeam(Number(team.id), response);
       const infoAway = LeaderBoardService.pointsTeam(Number(team.id), response);
 
@@ -25,7 +25,7 @@ export default class LeaderBoardService {
         totalDraws: infoHome.totalDraws + infoAway.totalDraws,
         totalGames: infoHome.totalGames + infoAway.totalGames,
       });
-    });
+    }));
 
     return result;
   }
@@ -51,15 +51,15 @@ export default class LeaderBoardService {
     };
   }
 
-  // private static sortTeams(board: ILeaderBoard[]): ILeaderBoard[] {
-  //   return board.sort((a, b) => (
-  //     b.totalPoints - a.totalPoints
-  //     || b.totalVictories - a.totalVictories
-  //     || b.goalsBalance - a.goalsBalance
-  //     || b.goalsFavor - a.goalsFavor
-  //     || b.goalsOwn - a.goalsOwn
-  //   ));
-  // }
+  private static sortTeams(board: ILeaderBoard[]): ILeaderBoard[] {
+    return board.sort((a, b) => (
+      b.totalPoints - a.totalPoints
+      || b.totalVictories - a.totalVictories
+      || b.goalsBalance - a.goalsBalance
+      || b.goalsFavor - a.goalsFavor
+      || b.goalsOwn - a.goalsOwn
+    ));
+  }
 
   private static setInfo({
     team, infoHome, infoAway, totalVictories, totalDraws, totalGames,
