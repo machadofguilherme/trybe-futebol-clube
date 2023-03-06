@@ -1,40 +1,56 @@
+import { ILeaderBoard } from '../interfaces/ILeaderBoard';
 import MatchModel from '../database/models/MatchModel';
-// import { ILeaderMatch } from '../interfaces/ILeaderMatch';
+
 import getTeamData from '../utils/getTeamData';
-
-/*
-  "totalPoints": 13,
-  "totalGames": 5,
-  "totalVictories": 4,
-  "totalDraws": 1,
-  "totalLosses": 0,
-*/
-
-// type TName = { name: string };
+import getTotalPoints from '../utils/getTotalPoints';
+import getTotalGames from '../utils/getTotalGames';
+import getTotalVictories from '../utils/getTotalVictories';
+import getTotalDraws from '../utils/getTotalDraws';
+import getTotalLosses from '../utils/getTotalLosses';
+import getGoalsFavor from '../utils/getGoalsFavor';
+import getGoalsOwn from '../utils/getGoalsOwn';
+import getEfficiency from '../utils/getEfficiency';
 
 export default class LeaderBoardService {
   constructor(private _model = getTeamData) { }
 
-  async find(): Promise<[]> {
-    const listMatches = await this._model();
+  sortList(list: ILeaderBoard[]): ILeaderBoard[] {
+    return list.sort((a, b) => (
+      b.totalPoints - a.totalPoints
+      || b.totalVictories - a.totalVictories
+      || b.goalsBalance - a.goalsBalance
+      || b.goalsFavor - a.goalsFavor
+      || b.goalsOwn - a.goalsOwn
+    ));
 
-    // const listTeams: ILeaderBoard = await TeamModel.findAll() as ILeaderBoard;
+    this._model();
+  }
 
+  calcBalance(listMatches: MatchModel[], teamName: string) {
+    const favor = getGoalsFavor(listMatches, teamName);
+    const own = getGoalsOwn(listMatches, teamName);
+    return favor - own;
+    this._model();
+  }
+
+  async find() {
+    const listMatches: MatchModel[] = await this._model();
     const objectCreate = listMatches.map((item) => {
-      const x: MatchModel = item;
-
+      const i: MatchModel = item as MatchModel;
       return {
-        name: x.dataValues.homeTeam.teamName,
-        totalPoints: 0,
-        totalGames: 0,
-        totalVictories: 0,
-        totalDraws: 0,
-        totalLosses: 0,
-        goalsFavor: 0,
-        goalsOwn: 0,
+        name: i.dataValues.homeTeam.teamName,
+        totalPoints: getTotalPoints(i.homeTeamGoals, i.awayTeamGoals),
+        totalGames: getTotalGames(listMatches, i.dataValues.homeTeam.teamName),
+        totalVictories: getTotalVictories(listMatches, i.dataValues.homeTeam.teamName),
+        totalDraws: getTotalDraws(listMatches, i.dataValues.homeTeam.teamName),
+        totalLosses: getTotalLosses(listMatches, i.dataValues.homeTeam.teamName),
+        goalsFavor: getGoalsFavor(listMatches, i.dataValues.homeTeam.teamName),
+        goalsOwn: getGoalsOwn(listMatches, i.dataValues.homeTeam.teamName),
+        goalsBalance: this.calcBalance(listMatches, i.dataValues.homeTeam.teamName),
+        efficiency: getEfficiency(listMatches, i.dataValues.homeTeam.teamName),
       };
-    });
+    }) as unknown as ILeaderBoard[];
 
-    return objectCreate as [];
+    return this.sortList(objectCreate);
   }
 }

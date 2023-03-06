@@ -5,4 +5,8 @@ export interface ILeaderBoard {
   totalVictories: number;
   totalDraws: number;
   totalLosses: number;
+  goalsFavor: number;
+  goalsOwn: number;
+  goalsBalance: number;
+  efficiency: number;
 }

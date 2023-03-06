@@ -8,7 +8,6 @@ const getTeamData = async () => {
       { model: TeamModel, as: 'homeTeam' },
       { model: TeamModel, as: 'awayTeam' },
     ],
-    attributes: [['home_team_goals', 'goalsFavor'], ['away_team_goals', 'goalsOwn']],
   });
 
   return result;
