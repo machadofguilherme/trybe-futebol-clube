@@ -1,10 +1,8 @@
 import MatchModel from '../database/models/MatchModel';
 
-const getTotalLosses = (listMatches: MatchModel[], teamName: string): number => {
+const getTotalLosses = (listMatches: MatchModel[]): number => {
   const sumTotalLosses = listMatches
-    .filter((matches) => matches
-      .dataValues.homeTeam.teamName === teamName
-      && matches.homeTeamGoals < matches.awayTeamGoals).length;
+    .filter((matches) => matches.homeTeamGoals < matches.awayTeamGoals).length;
 
   return sumTotalLosses;
 };

@@ -1,9 +1,8 @@
-const getTotalPoints = (homeGoal: number, outGoal: number): number => {
-  if (homeGoal > outGoal) { return homeGoal + 3; }
-  if (homeGoal === outGoal) { return homeGoal + 1; }
-  if (homeGoal < outGoal) { return homeGoal; }
+import MatchModel from '../database/models/MatchModel';
+import getTotalDraws from './getTotalDraws';
+import getTotalVictories from './getTotalVictories';
 
-  return homeGoal;
-};
+const getTotalPoints = (listMatches: MatchModel[]): number =>
+  (getTotalVictories(listMatches) * 3) + getTotalDraws(listMatches);
 
 export default getTotalPoints;

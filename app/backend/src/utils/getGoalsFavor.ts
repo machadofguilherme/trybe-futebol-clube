@@ -1,11 +1,8 @@
 import MatchModel from '../database/models/MatchModel';
 
-const getGoalsFavor = (listMatches: MatchModel[], teamName: string): number => {
-  const teamGames = listMatches
-    .filter((matches) => matches.dataValues.homeTeam.teamName === teamName);
-
-  const sumGoalsFavor = teamGames
-    .map((match) => match.homeTeamGoals).reduce((acc, match) => match + acc);
+const getGoalsFavor = (listMatches: MatchModel[]): number => {
+  const sumGoalsFavor = listMatches
+    .reduce((acc, match) => match.homeTeamGoals + acc, 0);
 
   return sumGoalsFavor;
 };

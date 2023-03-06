@@ -1,12 +1,8 @@
 import MatchModel from '../database/models/MatchModel';
 
-const getTotalDraws = (listMatches: MatchModel[], teamName: string): number => {
-  const sumTotalDraws = listMatches
-    .filter((matches) => matches
-      .dataValues.homeTeam.teamName === teamName
-      && matches.homeTeamGoals === matches.awayTeamGoals).length;
-
-  return sumTotalDraws;
+const getTotalDraws = (listMatches: MatchModel[]): number => {
+  const sumTotalDraws = listMatches.filter((draws) => draws.homeTeamGoals === draws.awayTeamGoals);
+  return sumTotalDraws.length;
 };
 
 export default getTotalDraws;
